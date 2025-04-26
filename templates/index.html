@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        input {
+            width: 50%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Simple URL Shortener</h2>
+    <input type="text" id="longUrl" placeholder="Enter long URL here...">
+    <button onclick="shortenUrl()">Shorten</button>
+    
+    <div id="result"></div>
+
+    <script>
+        function shortenUrl() {
+            let longUrl = document.getElementById("longUrl").value;
+            
+            fetch('/shorten', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url: longUrl })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.short_url) {
+                    document.getElementById("result").innerHTML = 
+                        `<p>Short URL: <a href="${data.short_url}" target="_blank">${data.short_url}</a></p>`;
+                } else {
+                    document.getElementById("result").innerHTML = `<p style="color:red;">Error: ${data.error}</p>`;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
+
